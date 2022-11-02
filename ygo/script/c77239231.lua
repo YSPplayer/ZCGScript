@@ -1,0 +1,138 @@
+--奥利哈刚 巨神兵 （ZCG）
+function c77239231.initial_effect(c)
+			--summon with 3 tribute
+	local e1=Effect.CreateEffect(c)
+	e1:SetDescription(aux.Stringid(77239231,0))
+	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
+	e1:SetType(EFFECT_TYPE_SINGLE)
+	e1:SetCode(EFFECT_LIMIT_SUMMON_PROC)
+	e1:SetCondition(c77239231.ttcon)
+	e1:SetOperation(c77239231.ttop)
+	e1:SetValue(SUMMON_TYPE_ADVANCE)
+	c:RegisterEffect(e1)
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_SINGLE)
+	e2:SetCode(EFFECT_LIMIT_SET_PROC)
+	e2:SetCondition(c77239231.setcon)
+	c:RegisterEffect(e2)
+	local e5=Effect.CreateEffect(c)
+	e5:SetDescription(aux.Stringid(77239231,1))
+	e5:SetType(EFFECT_TYPE_FIELD)
+	e5:SetCode(EFFECT_SPSUMMON_PROC)
+	e5:SetProperty(EFFECT_FLAG_UNCOPYABLE)
+	e5:SetRange(LOCATION_HAND)
+	e5:SetCondition(c77239231.spcon)
+	e5:SetOperation(c77239231.spop)
+	c:RegisterEffect(e5)
+	local e6=Effect.CreateEffect(c)
+	e6:SetDescription(aux.Stringid(77239231,2))
+	e6:SetType(EFFECT_TYPE_IGNITION)
+	e6:SetRange(LOCATION_MZONE)
+	e6:SetCost(c77239231.descost)
+	e6:SetOperation(c77239231.efcon)
+	c:RegisterEffect(e6)
+	local e7=Effect.CreateEffect(c)
+	e7:SetDescription(aux.Stringid(77239231,3))
+	e7:SetCategory(CATEGORY_DESTROY+CATEGORY_DAMAGE)
+	e7:SetType(EFFECT_TYPE_IGNITION)
+	e7:SetRange(LOCATION_MZONE)
+	e7:SetCost(c77239231.descost)
+	e7:SetCondition(c77239231.target)
+	e7:SetOperation(c77239231.activate)
+	c:RegisterEffect(e7)
+	local e8=Effect.CreateEffect(c)
+	e8:SetDescription(aux.Stringid(77239231,4))
+	e8:SetCategory(CATEGORY_ATKCHANGE)
+	e8:SetType(EFFECT_TYPE_IGNITION)
+	e8:SetRange(LOCATION_MZONE)
+	e8:SetCost(c77239231.descost)
+	e8:SetOperation(c77239231.atkop)
+	c:RegisterEffect(e8)
+	--immune spell
+	local e10=Effect.CreateEffect(c)
+	e10:SetType(EFFECT_TYPE_SINGLE)
+	e10:SetCode(EFFECT_IMMUNE_EFFECT)
+	e10:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e10:SetRange(LOCATION_MZONE)
+	e10:SetValue(c77239231.efilter)
+	c:RegisterEffect(e10)
+	--summon
+	local e3=Effect.CreateEffect(c)
+	e3:SetType(EFFECT_TYPE_SINGLE)
+	e3:SetCode(EFFECT_CANNOT_DISABLE_SUMMON)
+	e3:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
+	c:RegisterEffect(e3)
+	local e4=e3:Clone()
+	e4:SetCode(EFFECT_CANNOT_DISABLE_SPSUMMON)
+	c:RegisterEffect(e4)
+end
+function c77239231.target(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(aux.TRUE,tp,0,LOCATION_ONFIELD,1,nil) end
+	--local sg=Duel.GetMatchingGroup(aux.TRUE,tp,0,LOCATION_ONFIELD,nil)
+	--Duel.SetOperationInfo(0,CATEGORY_DESTROY,sg,sg:GetCount(),0,0)
+end
+function c77239231.activate(e,tp,eg,ep,ev,re,r,rp)
+	local sg=Duel.GetMatchingGroup(aux.TRUE,tp,0,LOCATION_ONFIELD,nil)
+	if Duel.Destroy(sg,REASON_EFFECT)~=0 then
+	Duel.Damage(1-tp,5000,REASON_EFFECT)
+end
+end
+function c77239231.atkop(e,tp,eg,ep,ev,re,r,rp)
+	local c=e:GetHandler()
+		local e1=Effect.CreateEffect(c)
+		e1:SetType(EFFECT_TYPE_SINGLE)
+		e1:SetCode(EFFECT_UPDATE_ATTACK)
+		e1:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
+		e1:SetValue(999999)
+		c:RegisterEffect(e1)
+	local e6=Effect.CreateEffect(c)
+	e6:SetType(EFFECT_TYPE_SINGLE)
+	e6:SetCode(EFFECT_DIRECT_ATTACK)
+	e6:SetReset(RESET_EVENT+RESETS_STANDARD+RESET_PHASE+PHASE_END)
+	c:RegisterEffect(e6)
+end
+function c77239231.efcon(e,tp,eg,ep,ev,re,r,rp)
+   local c=e:GetHandler()
+	local e5=Effect.CreateEffect(c)
+	e5:SetType(EFFECT_TYPE_SINGLE)
+	e5:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
+	e5:SetRange(LOCATION_MZONE)
+	e5:SetCode(EFFECT_INDESTRUCTABLE_BATTLE)
+	e5:SetValue(1)
+	e5:SetReset(RESET_EVENT+RESETS_STANDARD)
+	c:RegisterEffect(e5)
+	local e6=e5:Clone()
+	e6:SetCode(EFFECT_INDESTRUCTABLE_EFFECT)
+	c:RegisterEffect(e5)
+end
+function c77239231.desfilter(c)
+return c:IsReleasable()
+end
+function c77239231.descost(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(c77239231.desfilter,tp,LOCATION_MZONE,LOCATION_MZONE,2,e:GetHandler()) end
+	local g=Duel.SelectMatchingCard(tp,c77239231.desfilter,tp,LOCATION_MZONE,LOCATION_MZONE,2,2,e:GetHandler())
+	Duel.Release(g,REASON_COST)
+end
+function c77239231.efilter(e,te)
+	return te:GetOwner()~=e:GetOwner()
+end
+function c77239231.spcon(e,c)
+	if c==nil then return true end
+	return Duel.GetLocationCount(c:GetControler(),LOCATION_MZONE)>0
+end
+function c77239231.spop(e,tp,eg,ep,ev,re,r,rp,c)
+	Duel.PayLPCost(tp,math.floor(Duel.GetLP(tp)/2))
+end
+function c77239231.ttcon(e,c,minc)
+	if c==nil then return true end
+	return minc<=3 and Duel.CheckTribute(c,3)
+end
+function c77239231.ttop(e,tp,eg,ep,ev,re,r,rp,c)
+	local g=Duel.SelectTribute(tp,c,3,3)
+	c:SetMaterial(g)
+	Duel.Release(g,REASON_SUMMON+REASON_MATERIAL)
+end
+function c77239231.setcon(e,c,minc)
+	if not c then return true end
+	return false
+end
