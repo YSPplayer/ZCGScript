@@ -1,0 +1,2 @@
+# ZCGScript
+ygopro zcg lua
